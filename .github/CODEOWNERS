@@ -1,0 +1,13 @@
+# Code owners: se solicitan como reviewers automáticamente en cada PR.
+# La última regla que coincide tiene prioridad.
+# Docs: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Por defecto: todo el repositorio
+*                       @edwin-sierra
+
+# Áreas sensibles (asignar owners específicos a medida que crezca el equipo)
+/.github/               @edwin-sierra
+/docs/adr/              @edwin-sierra
+/migrations/            @edwin-sierra
+/app/core/security.py   @edwin-sierra
+/openspec/specs/        @edwin-sierra
