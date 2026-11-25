@@ -1,0 +1,58 @@
+schema: spec-driven
+
+context: |
+  Language: es
+  All artifacts must be written in es.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  ## Proyecto
+  API back office que es la fuente de datos de una flota de robots RPA:
+  catálogo de robots, ejecuciones por robot (disparar vía HTTP, consultar,
+  actualizar estado/resultado) y control de acceso por roles y permisos.
+  Documentación de referencia: docs/brief.md, docs/architecture.md,
+  docs/guidelines.md, docs/stack.md y docs/adr/.
+
+  ## Stack
+  Python 3.13, FastAPI, Pydantic v2, pydantic-settings, SQLAlchemy 2.0 async
+  (asyncpg), Alembic, PostgreSQL 16, httpx, PyJWT, pwdlib[argon2], structlog.
+  Tooling: uv, ruff, mypy --strict, pytest + pytest-asyncio + respx.
+  Docker multi-stage + docker compose (api + db). CI en GitHub Actions.
+
+  ## Arquitectura
+  - Módulos por bounded context en app/modules/<modulo>/ con
+    models.py, schemas.py, repository.py, service.py, router.py y client.py opcional.
+  - Capas: router -> service -> repository. Routers sin lógica de negocio;
+    services hacen commit y lanzan subclases de app.core.exceptions.AppError;
+    repositories solo hacen queries.
+  - Modelos heredan de app.db.base.Base (+ UUIDPrimaryKeyMixin, TimestampMixin)
+    y se registran en app/db/models.py para Alembic.
+  - API versionada bajo /api/v1; errores en RFC 9457 (application/problem+json);
+    paginación limit/offset con envelope {items, total}.
+
+  ## Dominio
+  - Robot: entrada del catálogo con trigger_url (endpoint HTTP que dispara el robot).
+  - Execution: PENDING -> TRIGGERED | TRIGGER_FAILED; TRIGGERED -> RUNNING ->
+    SUCCEEDED | FAILED | CANCELLED. Transiciones explícitas; las inválidas dan 409.
+  - Usuarios se autentican con JWT propio (access + refresh). Robots/runners
+    con API keys (guardadas hasheadas). RBAC con permisos "<recurso>:<accion>".
+
+  ## Reglas no negociables
+  - Todo endpoint (salvo /health y /auth/login) declara un permiso explícito.
+  - Todo cambio de esquema va con migración Alembic revisada.
+  - Toda capability nueva va con tests: unitarios del service, de integración
+    del endpoint y de permisos (403/401). Cobertura mínima 80%.
+  - Llamadas HTTP salientes con timeout, mockeadas con respx en tests.
+  - Nunca loguear secretos, passwords, tokens ni API keys.
+
+rules:
+  proposal:
+    - Indicar explícitamente qué queda fuera de alcance.
+    - Listar los permisos RBAC que agrega o usa el change.
+  design:
+    - Incluir el impacto en el modelo de datos y la migración Alembic necesaria.
+    - Documentar las decisiones de seguridad (auth, permisos, SSRF, secretos).
+  specs:
+    - Cada requirement incluye escenarios de éxito, de error de validación y de permiso denegado.
+  tasks:
+    - Incluir tareas de migración, tests y actualización de docs cuando aplique.
+    - Terminar con una tarea de verificación (make check y make test en verde).

@@ -1,0 +1,11 @@
+"""Registro de modelos para Alembic.
+
+Importar aquí los módulos `models` de cada bounded context para que
+`Base.metadata` los conozca al autogenerar migraciones, p.ej.:
+
+    from app.modules.robots import models as robots_models  # noqa: F401
+"""
+
+from app.db.base import Base
+
+__all__ = ["Base"]
