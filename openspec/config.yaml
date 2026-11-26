@@ -37,7 +37,9 @@ context: |
     con API keys (guardadas hasheadas). RBAC con permisos "<recurso>:<accion>".
 
   ## Reglas no negociables
-  - Todo endpoint (salvo /health y /auth/login) declara un permiso explícito.
+  - Todo endpoint (salvo /health y /auth/*) declara un permiso explícito con
+    require_permission. Los endpoints /auth/* no evalúan permisos ni responden 403:
+    login es público, refresh exige refresh token y el resto exige access token.
   - Todo cambio de esquema va con migración Alembic revisada.
   - Toda capability nueva va con tests: unitarios del service, de integración
     del endpoint y de permisos (403/401). Cobertura mínima 80%.
