@@ -26,6 +26,23 @@ def test_password_hash_is_argon2id_and_not_reversible() -> None:
     assert not verify_password("incorrect-password", password_hash)
 
 
+@pytest.mark.parametrize("secret", ["change-me", "too-short"])
+def test_settings_rejects_default_or_short_jwt_secret(secret: str) -> None:
+    with pytest.raises(ValueError, match="APP_JWT_SECRET_KEY"):
+        Settings(jwt_secret_key=secret)
+
+
+@pytest.mark.parametrize("environment", ["staging", "production"])
+def test_settings_requires_jwt_secret_outside_local_and_test(environment: str) -> None:
+    with pytest.raises(ValueError, match="APP_JWT_SECRET_KEY"):
+        Settings(environment=environment)
+
+
+def test_token_issuance_requires_configured_jwt_secret() -> None:
+    with pytest.raises(RuntimeError, match="APP_JWT_SECRET_KEY"):
+        create_access_token(uuid4(), Settings())
+
+
 def test_access_token_has_required_claims_and_fifteen_minute_lifetime() -> None:
     settings = Settings(jwt_secret_key="unit-test-signing-key-with-sufficient-length")
     subject = uuid4()
@@ -111,6 +128,35 @@ def test_decode_token_rejects_missing_issued_at_claim() -> None:
     now = datetime.now(UTC)
     token = jwt.encode(
         {"sub": str(uuid4()), "exp": now + timedelta(minutes=1), "type": "access"},
+        settings.jwt_secret_key.get_secret_value(),
+        algorithm=settings.jwt_algorithm,
+    )
+
+    with pytest.raises(InvalidTokenError):
+        decode_token(token, settings, "access")
+
+
+@pytest.mark.parametrize(
+    "claims",
+    [
+        {
+            "iat": datetime.now(UTC),
+            "exp": datetime.now(UTC) + timedelta(minutes=1),
+            "type": "access",
+        },
+        {"sub": str(uuid4()), "iat": datetime.now(UTC), "type": "access"},
+        {
+            "sub": str(uuid4()),
+            "iat": datetime.now(UTC),
+            "exp": datetime.now(UTC) + timedelta(minutes=1),
+        },
+    ],
+    ids=["subject", "expiration", "type"],
+)
+def test_decode_token_rejects_missing_required_claims(claims: dict[str, object]) -> None:
+    settings = Settings(jwt_secret_key="unit-test-signing-key-with-sufficient-length")
+    token = jwt.encode(
+        claims,
         settings.jwt_secret_key.get_secret_value(),
         algorithm=settings.jwt_algorithm,
     )

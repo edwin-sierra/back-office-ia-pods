@@ -3,7 +3,7 @@
 from enum import StrEnum
 from functools import lru_cache
 
-from pydantic import Field, PostgresDsn, SecretStr
+from pydantic import Field, PostgresDsn, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     database_max_overflow: int = 10
 
     # Se usan en el change `add-iam-auth`.
-    jwt_secret_key: SecretStr = SecretStr("change-me")
+    jwt_secret_key: SecretStr = SecretStr("")
     jwt_algorithm: str = "HS256"
     jwt_access_token_ttl_minutes: int = 15
     jwt_refresh_token_ttl_days: int = 7
@@ -44,6 +44,22 @@ class Settings(BaseSettings):
     # Se usan en el change `add-robot-executions`.
     trigger_timeout_seconds: float = 10.0
     trigger_allowed_hosts: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_jwt_secret_key(self) -> "Settings":
+        configured_key = self.jwt_secret_key.get_secret_value()
+        if not configured_key:
+            if self.environment not in (Environment.LOCAL, Environment.TEST):
+                raise ValueError(
+                    "APP_JWT_SECRET_KEY is required outside local and test environments"
+                )
+            return self
+
+        if configured_key == "change-me" or len(configured_key) < 32:
+            raise ValueError(
+                "APP_JWT_SECRET_KEY must be a non-default value of at least 32 characters"
+            )
+        return self
 
     @property
     def is_production(self) -> bool:

@@ -58,7 +58,7 @@ def decode_token(token: str, settings: Settings, expected_type: TokenType) -> To
     """Valida firma, expiración y claims obligatorios del tipo de token esperado."""
     payload = jwt.decode(
         token,
-        settings.jwt_secret_key.get_secret_value(),
+        _jwt_signing_key(settings),
         algorithms=[settings.jwt_algorithm],
         options={"require": ["exp", "iat", "sub", "type"]},
     )
@@ -98,9 +98,16 @@ def _create_token(
     }
     return jwt.encode(
         payload,
-        settings.jwt_secret_key.get_secret_value(),
+        _jwt_signing_key(settings),
         algorithm=settings.jwt_algorithm,
     )
+
+
+def _jwt_signing_key(settings: Settings) -> str:
+    secret = settings.jwt_secret_key.get_secret_value()
+    if not secret:
+        raise RuntimeError("APP_JWT_SECRET_KEY must be configured before using JWT")
+    return secret
 
 
 def _claim_datetime(value: object) -> datetime:
