@@ -19,7 +19,7 @@ def test_user_create_validates_email_and_defaults_to_active() -> None:
     assert user.is_active is True
 
 
-@pytest.mark.parametrize("email", ["invalid", "person@localhost", "person @example.test"])
+@pytest.mark.parametrize("email", ["invalid", "person@localhost", "person @example.test", "a@b..c"])
 def test_user_create_rejects_invalid_email(email: str) -> None:
     with pytest.raises(ValidationError):
         UserCreate(

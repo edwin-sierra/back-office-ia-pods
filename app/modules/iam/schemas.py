@@ -18,7 +18,7 @@ class UserCreate(BaseModel):
     @field_validator("email")
     @classmethod
     def validate_email(cls, value: str) -> str:
-        if re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", value) is None:
+        if re.fullmatch(r"[^@\s]+@[^@\s.]+(?:\.[^@\s.]+)+", value) is None:
             raise ValueError("Invalid email address")
         return value
 
