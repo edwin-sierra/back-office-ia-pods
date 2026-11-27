@@ -16,7 +16,7 @@
 
 ## 5. Bootstrap inicial
 
-- [ ] 5.1 Implementar el servicio y comando de bootstrap en `app/modules/iam/` sin añadir una dependencia CLI: crea un usuario activo y almacena solo el hash Argon2id; ante email existente informa conflicto y conserva el registro intacto; solicita la contraseña sin eco y no la muestra ni registra. Pruebas unitarias del servicio/comando y de integración con PostgreSQL cubren creación, conflicto, falta de modificación y ausencia de la contraseña en salida/logs; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
+- [x] 5.1 Implementar el servicio y comando de bootstrap en `app/modules/iam/` sin añadir una dependencia CLI: crea un usuario activo y almacena solo el hash Argon2id; ante email existente informa conflicto y conserva el registro intacto; solicita la contraseña sin eco y no la muestra ni registra. Pruebas unitarias del servicio/comando y de integración con PostgreSQL cubren creación, conflicto, falta de modificación y ausencia de la contraseña en salida/logs; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
 
 ## 6. Inicio de sesión
 
