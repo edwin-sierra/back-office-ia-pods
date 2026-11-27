@@ -12,7 +12,7 @@
 
 ## 4. Primitivas de credenciales y JWT
 
-- [ ] 4.1 Implementar en `app/core/security.py` el hash y verificación Argon2id y la emisión/validación de JWT con `Settings`: distinguir access y refresh, validar `exp`, `iat`, `sub` y tipo, y usar las duraciones de 15 minutos y 7 días; pruebas unitarias comprueban hashes no reversibles, claims/duraciones y rechazo de tokens inválidos, expirados o del tipo incorrecto, sin registrar secretos; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
+- [x] 4.1 Implementar en `app/core/security.py` el hash y verificación Argon2id y la emisión/validación de JWT con `Settings`: distinguir access y refresh, validar `exp`, `iat`, `sub` y tipo, y usar las duraciones de 15 minutos y 7 días; pruebas unitarias comprueban hashes no reversibles, claims/duraciones y rechazo de tokens inválidos, expirados o del tipo incorrecto, sin registrar secretos; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
 
 ## 5. Bootstrap inicial
 
