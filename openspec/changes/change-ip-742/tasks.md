@@ -8,7 +8,7 @@
 
 ## 3. Contratos y acceso a datos IAM
 
-- [ ] 3.1 Añadir schemas de entrada y salida en `app/modules/iam/schemas.py` y consultas sin commit en `app/modules/iam/repository.py`; pruebas unitarias cubren validación/serialización y pruebas de integración con PostgreSQL verifican persistencia y consultas de usuarios, incluida la unicidad; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
+- [x] 3.1 Añadir schemas de entrada y salida en `app/modules/iam/schemas.py` y consultas sin commit en `app/modules/iam/repository.py`; pruebas unitarias cubren validación/serialización y pruebas de integración con PostgreSQL verifican persistencia y consultas de usuarios, incluida la unicidad; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
 
 ## 4. Primitivas de credenciales y JWT
 
