@@ -106,6 +106,47 @@ def test_decode_token_rejects_invalid_subject() -> None:
         decode_token(token, settings, "access")
 
 
+def test_decode_token_rejects_missing_issued_at_claim() -> None:
+    settings = Settings(jwt_secret_key="unit-test-signing-key-with-sufficient-length")
+    now = datetime.now(UTC)
+    token = jwt.encode(
+        {"sub": str(uuid4()), "exp": now + timedelta(minutes=1), "type": "access"},
+        settings.jwt_secret_key.get_secret_value(),
+        algorithm=settings.jwt_algorithm,
+    )
+
+    with pytest.raises(InvalidTokenError):
+        decode_token(token, settings, "access")
+
+
+def test_decode_token_rejects_future_issued_at_claim() -> None:
+    settings = Settings(jwt_secret_key="unit-test-signing-key-with-sufficient-length")
+    issued_at = datetime.now(UTC) + timedelta(minutes=1)
+    token = jwt.encode(
+        {
+            "sub": str(uuid4()),
+            "iat": issued_at,
+            "exp": issued_at + timedelta(minutes=1),
+            "type": "access",
+        },
+        settings.jwt_secret_key.get_secret_value(),
+        algorithm=settings.jwt_algorithm,
+    )
+
+    with pytest.raises(InvalidTokenError):
+        decode_token(token, settings, "access")
+
+
+def test_decode_token_rejects_invalid_signature() -> None:
+    settings = Settings(jwt_secret_key="unit-test-signing-key-with-sufficient-length")
+    other_settings = Settings(jwt_secret_key="another-unit-test-signing-key-with-sufficient-length")
+
+    token = create_access_token(uuid4(), other_settings)
+
+    with pytest.raises(InvalidTokenError):
+        decode_token(token, settings, "access")
+
+
 def test_security_operations_do_not_log_credentials_or_tokens(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
