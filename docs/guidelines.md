@@ -50,6 +50,8 @@ Estas reglas aplican a todo el código, incluido el generado con Claude Code. Si
 - Passwords con Argon2id (pwdlib). API keys: se muestran una sola vez y se guarda solo hash y prefijo.
 - JWT de vida corta (15 min) + refresh token. Validar `exp`, `iat`, `sub` y el tipo de token.
 - **Todo endpoint declara su permiso** con `require_permission(...)`, salvo `/health` y `/auth/*`.
+  Los endpoints `/auth/*` solo autentican y no evalúan permisos ni responden 403: login es
+  público, refresh requiere un refresh token válido y los demás requieren un access token válido.
 - Mínimo privilegio: los robots solo actualizan **sus** ejecuciones.
 - SSRF: `trigger_url` validado contra `APP_TRIGGER_ALLOWED_HOSTS`; sin redirects automáticos.
 - Nunca loguear passwords, tokens, API keys, headers `Authorization` ni payloads sensibles.

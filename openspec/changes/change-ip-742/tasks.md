@@ -1,6 +1,6 @@
 ## 1. Convención de autenticación
 
-- [ ] 1.1 Armonizar `openspec/config.yaml` con la excepción de `docs/guidelines.md` y registrar en `docs/adr/0004-authentication-without-rbac.md` que `/auth/*` no evalúa permisos: login es público, refresh autentica con refresh token y los demás endpoints de auth exigen access token según corresponda; no se agrega RBAC ni respuestas 403. No requiere pruebas automáticas porque solo modifica configuración de OpenSpec y documentación versionada.
+- [x] 1.1 Armonizar `openspec/config.yaml` con la excepción de `docs/guidelines.md` y registrar en `docs/adr/0004-authentication-without-rbac.md` que `/auth/*` no evalúa permisos: login es público, refresh autentica con refresh token y los demás endpoints de auth exigen access token según corresponda; no se agrega RBAC ni respuestas 403. No requiere pruebas automáticas porque solo modifica configuración de OpenSpec y documentación versionada.
 
 ## 2. Persistencia de usuarios
 
