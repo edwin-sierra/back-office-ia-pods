@@ -7,5 +7,6 @@ Importar aquí los módulos `models` de cada bounded context para que
 """
 
 from app.db.base import Base
+from app.modules.iam import models as iam_models  # noqa: F401
 
 __all__ = ["Base"]

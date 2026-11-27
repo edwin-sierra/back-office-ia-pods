@@ -4,7 +4,7 @@
 
 ## 2. Persistencia de usuarios
 
-- [ ] 2.1 Implementar `User` en `app/modules/iam/models.py`, registrarlo en `app/db/models.py` y añadir la migración Alembic reversible para UUID, email único, nombre completo, hash Argon2id, estado activo y timestamps, sin crear usuarios ni roles; las pruebas de integración con PostgreSQL comprueban upgrade, downgrade y unicidad del email; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
+- [x] 2.1 Implementar `User` en `app/modules/iam/models.py`, registrarlo en `app/db/models.py` y añadir la migración Alembic reversible para UUID, email único, nombre completo, hash Argon2id, estado activo y timestamps, sin crear usuarios ni roles; las pruebas de integración con PostgreSQL comprueban upgrade, downgrade y unicidad del email; `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
 
 ## 3. Contratos y acceso a datos IAM
 
