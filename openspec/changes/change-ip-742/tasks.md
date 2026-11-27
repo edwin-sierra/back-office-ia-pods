@@ -20,7 +20,7 @@
 
 ## 6. Inicio de sesión
 
-- [ ] 6.1 Implementar service y `POST /api/v1/auth/login` en `app/modules/iam/`, registrar el router en `app/api/v1/router.py` y mantenerlo público, sin permisos RBAC. Las pruebas de API verifican que credenciales válidas de usuario activo devuelven HTTP 200 con `access_token`, `refresh_token`, `token_type: "bearer"` y `expires_in: 900`; email inexistente y contraseña incorrecta devuelven HTTP 401 con el mismo mensaje genérico; usuario inactivo devuelve 401; cuerpo incompleto o email inválido devuelve 422 `application/problem+json`; ninguno devuelve 403. `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
+- [x] 6.1 Implementar service y `POST /api/v1/auth/login` en `app/modules/iam/`, registrar el router en `app/api/v1/router.py` y mantenerlo público, sin permisos RBAC. Las pruebas de API verifican que credenciales válidas de usuario activo devuelven HTTP 200 con `access_token`, `refresh_token`, `token_type: "bearer"` y `expires_in: 900`; email inexistente y contraseña incorrecta devuelven HTTP 401 con el mismo mensaje genérico; usuario inactivo devuelve 401; cuerpo incompleto o email inválido devuelve 422 `application/problem+json`; ninguno devuelve 403. `uv run python -m compileall -q app && uv run python -c "from app.main import app"`, `uv run ruff check . && uv run ruff format --check . && uv run mypy` y `uv run pytest` pasan.
 
 ## 7. Renovación de tokens
 

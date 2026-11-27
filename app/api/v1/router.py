@@ -3,9 +3,11 @@
 from fastapi import APIRouter
 
 from app.api.v1 import health
+from app.modules.iam.router import router as iam_router
 
 api_router = APIRouter()
 api_router.include_router(health.router)
+api_router.include_router(iam_router)
 
 # Se agregan con los changes de OpenSpec, p.ej.:
 # from app.modules.robots.router import router as robots_router
