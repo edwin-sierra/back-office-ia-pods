@@ -18,9 +18,17 @@ class UserCreate(BaseModel):
     @field_validator("email")
     @classmethod
     def validate_email(cls, value: str) -> str:
-        if re.fullmatch(r"[^@\s]+@[^@\s.]+(?:\.[^@\s.]+)+", value) is None:
+        local_part, separator, domain = value.partition("@")
+        local_pattern = r"[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*"
+        domain_label = r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
+        domain_pattern = rf"{domain_label}(?:\.{domain_label})+"
+        if (
+            not separator
+            or re.fullmatch(local_pattern, local_part) is None
+            or re.fullmatch(domain_pattern, domain) is None
+        ):
             raise ValueError("Invalid email address")
-        return value
+        return value.lower()
 
 
 class UserRead(BaseModel):

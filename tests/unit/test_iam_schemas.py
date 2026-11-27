@@ -29,6 +29,46 @@ def test_user_create_rejects_invalid_email(email: str) -> None:
         )
 
 
+@pytest.mark.parametrize(
+    "email",
+    [
+        ".person@example.test",
+        "person.@example.test",
+        "per..son@example.test",
+        "person@-example.test",
+        "person@example-.test",
+        "person@example.test-",
+        "person@example",
+        "person @example.test",
+        "person@ example.test",
+    ],
+)
+def test_user_create_rejects_malformed_email_parts(email: str) -> None:
+    with pytest.raises(ValidationError):
+        UserCreate(
+            email=email,
+            full_name="Test Person",
+            password_hash="encoded-hash-placeholder",
+        )
+
+
+@pytest.mark.parametrize(
+    ("email", "normalized"),
+    [
+        ("person@example.test", "person@example.test"),
+        ("First.Last+tag@Example.TEST", "first.last+tag@example.test"),
+    ],
+)
+def test_user_create_accepts_and_normalizes_valid_email(email: str, normalized: str) -> None:
+    user = UserCreate(
+        email=email,
+        full_name="Test Person",
+        password_hash="encoded-hash-placeholder",
+    )
+
+    assert user.email == normalized
+
+
 def test_user_read_serializes_profile_without_password_hash() -> None:
     timestamp = datetime(2026, 11, 27, tzinfo=UTC)
     user = User(
